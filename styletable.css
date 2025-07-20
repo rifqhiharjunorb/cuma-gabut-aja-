@@ -1,0 +1,179 @@
+/* Reset margin dan padding untuk semua elemen */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Gaya untuk body */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-image: url('estabel3.jpg'); 
+    background-size: cover;
+    animation: fadeIn 2s ease-in-out; /* Animasi fade-in untuk body */
+}
+
+/* Gaya untuk header */
+header {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: rgba(255, 255, 255, 0.9); /* Transparansi */
+    text-align: center;
+    padding: 1.5rem 0;
+    border-bottom: 4px solid #0056b3;
+    animation: slideInFromTop 1s ease-out; /* Animasi slide-in dari atas untuk header */
+}
+
+header h1 {
+    font-size: 2rem;
+    animation: textGlow 1.5s infinite alternate; /* Animasi teks */
+}
+
+/* Gaya untuk container utama */
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: rgba(255, 255, 255, 0.9); /* Transparansi */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background: url('your-background-image.jpg') no-repeat center center/cover; /* Background image */
+    animation: fadeIn 2s ease-in-out; /* Animasi fade-in untuk container */
+}
+
+/* Gaya untuk tabel */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.7); /* Transparansi tabel */
+    animation: tableSlideIn 1s ease-out; /* Animasi slide-in untuk tabel */
+    border-radius: 5px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s, box-shadow 0.3s; /* Transisi warna latar belakang dan bayangan */
+}
+
+th {
+    background: linear-gradient(135deg, #ff6f61, #d084a8);
+    color: rgba(255, 255, 255, 0.9); /* Transparansi */
+    font-size: 1.1rem;
+    animation: textGlow 1.5s infinite alternate; /* Animasi teks */
+}
+
+td {
+    background-color: rgba(249, 249, 249, 0.7); /* Transparansi */
+}
+
+/* Gaya untuk baris tabel ganjil dan genap */
+tbody tr:nth-child(odd) {
+    background-color: rgba(241, 241, 241, 0.7); /* Transparansi */
+}
+
+tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.7); /* Transparansi */
+}
+
+tbody tr:hover {
+    background-color: rgba(200, 200, 200, 0.9); /* Lebih jelas saat di-hover */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Bayangan untuk efek fokus */
+    animation: rowHover 0.3s ease-in-out; /* Animasi hover pada baris tabel */
+}
+
+/* Gaya untuk tombol pemesanan dan tombol kembali */
+.pesanan-es form, .button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pesanan-es input[type="submit"], .button-back {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: rgba(255, 255, 255, 0.9); /* Transparansi */
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    animation: buttonFadeIn 1s ease-in-out; /* Animasi fade-in untuk tombol */
+}
+
+.pesanan-es input[type="submit"]:hover, .button-back:hover {
+    background: linear-gradient(135deg, #218838, #1e7e34);
+    transform: scale(1.05);
+}
+
+/* Animasi teks */
+@keyframes textGlow {
+    from {
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    }
+    to {
+        text-shadow: 0 0 15px rgba(255, 255, 255, 1);
+    }
+}
+
+/* Animasi fade-in untuk body dan container */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Animasi slide-in dari atas untuk header */
+@keyframes slideInFromTop {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Animasi slide-in untuk tabel */
+@keyframes tableSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Animasi hover pada baris tabel */
+@keyframes rowHover {
+    from {
+        background-color: rgba(249, 249, 249, 0.7);
+    }
+    to {
+        background-color: rgba(200, 200, 200, 0.9);
+    }
+}
+
+/* Animasi fade-in untuk tombol */
+@keyframes buttonFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
