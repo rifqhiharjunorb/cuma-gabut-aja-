@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Pesanan Es Krim</title>
+    <link rel="stylesheet" type="text/css" href="styletable.css">
+</head>
+<body>
+    <header>
+        <h1>Riwayat Pesanan Es Krim</h1>
+    </header>
+    <div class="container">
+        <table id="orderTable">
+            <thead>
+                <tr>
+                    <th>No. Tiket</th>
+                    <th>Nama</th>
+                    <th>Rasa Utama</th>
+                    <th>Mix Rasa</th>
+                    <th>Topping</th>
+                    <th>Ukuran</th>
+                    <th>Tempat</th>
+                    <th>Jumlah</th>
+                    <th>Deskripsi</th>
+                    <th>Total Harga</th>
+                    <th>Waktu</th>
+                </tr>
+            </thead>
+            <tbody id="orderTableBody">
+                <!-- Data riwayat akan diisi oleh JavaScript -->
+            </tbody>
+        </table>
+        <div class="button-container">
+            <a href="tokoeskrim.html" class="button-back">Kembali</a>
+        </div>
+    </div>
+    <script>
+        function loadOrderHistory() {
+            const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            const tableBody = document.getElementById('orderTableBody');
+            tableBody.innerHTML = '';
+            orderHistory.forEach((order, idx) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.ticketNumber}</td>
+                    <td>${order.name}</td>
+                    <td>${order.flavor || '-'}</td>
+                    <td>${order.mixFlavor || '-'}</td>
+                    <td>${order.toppings}</td>
+                    <td>${order.size}</td>
+                    <td>${order.container}</td>
+                    <td>${order.quantity}</td>
+                    <td>${order.orderDescription}</td>
+                    <td>Rp ${order.totalPrice.toLocaleString()}</td>
+                    <td>${order.time}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        function updateStatus(idx, newStatus) {
+            let orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            orderHistory[idx].status = newStatus;
+            localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+            loadOrderHistory();
+        }
+        window.onload = loadOrderHistory;
+    </script>
+</body>
+</html> 
