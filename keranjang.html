@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Pesanan</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; margin: 0; padding: 0; }
+        .container { max-width: 900px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+        h1 { text-align: center; margin-bottom: 30px; font-size: 2rem; color: #222; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; font-size: 1rem; }
+        th { background: #eee; }
+        tr:nth-child(even) { background: #f4f4f4; }
+        .btn { padding: 7px 16px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+        .btn-danger { background: #dc3545; color: #fff; }
+        .btn-order { background: #007bff; color: #fff; margin-top: 18px; display: block; width: 100%; font-size: 1.1rem; }
+        .empty { text-align: center; color: #888; font-size: 1.2rem; margin: 40px 0; }
+        .ticket-container { background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 12px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); padding: 25px; max-width: 500px; margin: 30px auto; animation: slideIn 0.7s ease-out;}
+        .ticket-header { text-align: center; margin-bottom: 25px; }
+        .ticket-header h2 { margin: 0; color: #007bff; font-size: 2rem; }
+        .ticket-footer { text-align: center; margin-top: 25px; }
+        .print-btn { background: #28a745; color: #fff; border: none; border-radius: 5px; padding: 10px 22px; font-size: 1.1rem; cursor: pointer; }
+        .button-back { background-color: #dc3545; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s, transform 0.3s; font-size: 1.2rem; position: relative; overflow: hidden; text-decoration: none; display: inline-block;}
+        .button-back:hover { background-color: #c82333; transform: translateY(-3px);}
+        @keyframes slideIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* Tiket grup */
+        .ticket-container.special { background: linear-gradient(135deg, #f8ffae 0%, #43c6ac 100%); border: 3px solid #ff6f61; box-shadow: 0 0 30px rgba(67,198,172,0.2); animation: ticketPop 0.7s cubic-bezier(.68,-0.55,.27,1.55);}
+        .ticket-header.special { color: #ff6f61; font-size: 2.3rem; letter-spacing: 2px; margin-bottom: 18px; text-shadow: 0 2px 8px #fff6;}
+        .ticket-content.special ol { padding-left: 1.2em;}
+        .ticket-content.special li { margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center;}
+        .ticket-content.special li::before { content: '\1F366'; margin-right: 8px; font-size: 1.3em;}
+        .ticket-number-special { font-size: 2.2rem; color: #43c6ac; font-weight: bold; margin-bottom: 10px; display: block;}
+        @keyframes ticketPop { 0% { transform: scale(0.7) rotate(-8deg); opacity: 0; } 80% { transform: scale(1.05) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContent">
+        <h1>Keranjang Pesanan</h1>
+        <div id="cartSection"></div>
+        <div id="backBtnContainer" style="text-align:center;margin-top:30px;">
+            <a href="pesaneskrim.html" class="button-back" style="margin-right: 10px;">Kembali</a>
+            <a href="pesankeranjang.html" class="button-back">Ke Pesan Keranjang</a>
+        </div>
+    </div>
+    <script>
+    function renderCart() {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const cartSection = document.getElementById('cartSection');
+        if(cart.length === 0) {
+            cartSection.innerHTML = '<div class="empty">Keranjang kosong.</div>';
+            document.getElementById('backBtnContainer').style.display = 'block';
+            return;
+        }
+        let table = `<table><thead><tr><th>Pilih</th><th>Nama</th><th>Rasa Utama</th><th>Mix Rasa</th><th>Topping</th><th>Ukuran</th><th>Tempat</th><th>Jumlah</th><th>Deskripsi</th><th>Total Harga</th><th>Aksi</th></tr></thead><tbody>`;
+        cart.forEach((item, idx) => {
+            table += `<tr>
+                <td><input type="checkbox" class="item-checkbox" data-idx="${idx}" checked></td>
+                <td>${item.name}</td>
+                <td>${item.flavor}</td>
+                <td>${item.mixFlavor || '-'}</td>
+                <td>${item.toppings}</td>
+                <td>${item.size}</td>
+                <td>${item.container}</td>
+                <td>${item.quantity}</td>
+                <td>${item.orderDescription}</td>
+                <td>Rp ${item.totalPrice.toLocaleString()}</td>
+                <td><button class='btn btn-danger' onclick='removeItem(${idx})'>Hapus</button></td>
+            </tr>`;
+        });
+        table += '</tbody></table>';
+        table += `<button class='btn btn-order' onclick='orderSelected()'>Pesan Terpilih</button>`;
+        cartSection.innerHTML = table;
+        document.getElementById('backBtnContainer').style.display = 'block';
+    }
+    function removeItem(idx) {
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        cart.splice(idx, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCart();
+    }
+    function orderSelected() {
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+        let selectedItems = [];
+        checkboxes.forEach(cb => {
+            if(cb.checked) {
+                const idx = parseInt(cb.getAttribute('data-idx'));
+                if(cart[idx]) selectedItems.push(cart[idx]);
+            }
+        });
+        if(selectedItems.length === 0) {
+            alert('Pilih minimal satu item untuk dipesan.');
+            return;
+        }
+        // Simpan ke riwayat pembelian (orderHistory)
+        let orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+        const today = new Date().toISOString().split('T')[0];
+        let storedData = localStorage.getItem('ticketData');
+        let ticketNumber = 1;
+        if (storedData) {
+            let data = JSON.parse(storedData);
+            if (data.date === today) {
+                ticketNumber = data.number + 1;
+            }
+        }
+        localStorage.setItem('ticketData', JSON.stringify({ date: today, number: ticketNumber+selectedItems.length-1 }));
+        selectedItems.forEach((item, i) => {
+            orderHistory.push({
+                ticketNumber: ticketNumber + i,
+                ...item,
+                time: new Date().toLocaleTimeString()
+            });
+        });
+        localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+        // Tampilkan tiket khusus jika >1 item
+        showTicket(selectedItems, ticketNumber);
+        // Kosongkan keranjang setelah memesan
+        localStorage.setItem('cart', JSON.stringify([]));
+        renderCart();
+    }
+    function showTicket(cart, startNumber) {
+        let html = '';
+        if(cart.length > 1) {
+            html += `
+            <div class='ticket-container special'>
+                <div class='ticket-header special'>
+                    <div style="font-size:2.2rem;font-weight:700;color:#43c6ac;margin-bottom:2px;">Tiket Grup</div>
+                    <div style="font-size:1.3rem;font-weight:600;color:#ff6f61;margin-bottom:10px;">Tiket Antrian Keranjang</div>
+                </div>
+                <div class='ticket-content special'>
+                    <p style="font-weight:600;font-size:1.1rem;margin-bottom:12px;">Jumlah Pesanan: ${cart.length}</p>
+                    <ol style="padding-left:1.5em;">`;
+            cart.forEach((item, i) => {
+                html += `
+                    <li style="margin-bottom:18px;display:flex;align-items:flex-start;">
+                        <span style="font-size:1.7em;margin-right:10px;line-height:1.2;">🍦</span>
+                        <div>
+                            <div style="font-weight:600;color:#007bff;">No. ${i+1} - ${i === 0 ? item.name : ''}</div>
+                            <div><b>Rasa:</b> ${item.flavor}</div>
+                            <div><b>Mix:</b> ${item.mixFlavor||'-'}</div>
+                            <div><b>Topping:</b> ${item.toppings}</div>
+                            <div><b>Ukuran:</b> ${item.size}</div>
+                            <div><b>Tempat:</b> ${item.container}</div>
+                            <div><b>Jumlah:</b> ${item.quantity}</div>
+                            <div><b>Total:</b> Rp ${item.totalPrice.toLocaleString()}</div>
+                        </div>
+                    </li>`;
+            });
+            html += `</ol>
+                </div>
+                <div class='ticket-footer' style="margin-top:20px;">
+                    <button class='print-btn' onclick='window.print()'>Print Tiket</button>
+                </div>
+            </div>`;
+        } else {
+            cart.forEach((item, i) => {
+                html += `<div class='ticket-container special'>
+                    <div class='ticket-header special'>
+                        <div style="font-size:2.2rem;font-weight:700;color:#43c6ac;margin-bottom:2px;">Tiket Antrian</div>
+                    </div>
+                    <div class='ticket-content special'>
+                        <ul style='list-style:none;padding-left:0;'>
+                            <li><span style="font-size:1.7em;margin-right:10px;line-height:1.2;">🍦</span> <b>No. 1 - ${item.name}</b></li>
+                            <li><b>Rasa:</b> ${item.flavor}</li>
+                            <li><b>Mix:</b> ${item.mixFlavor||'-'}</li>
+                            <li><b>Topping:</b> ${item.toppings}</li>
+                            <li><b>Ukuran:</b> ${item.size}</li>
+                            <li><b>Tempat:</b> ${item.container}</li>
+                            <li><b>Jumlah:</b> ${item.quantity}</li>
+                            <li><b>Deskripsi Pesanan:</b> ${item.orderDescription}</li>
+                            <li><b>Total:</b> Rp ${item.totalPrice.toLocaleString()}</li>
+                        </ul>
+                    </div>
+                    <div class='ticket-footer' style="margin-top:20px;">
+                        <button class='print-btn' onclick='window.print()'>Print Tiket</button>
+                    </div>
+                </div>`;
+            });
+        }
+        html += `<div style='text-align:center;margin-top:30px;'><a href='pesaneskrim.html' class='button-back'>Kembali</a></div>`;
+        document.getElementById('mainContent').innerHTML = html;
+    }
+    // Pastikan renderCart dipanggil saat halaman dimuat
+    renderCart();
+    </script>
+</body>
+</html>

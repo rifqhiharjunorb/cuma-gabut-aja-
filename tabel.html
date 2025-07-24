@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Riwayat Pembelian</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; margin: 0; padding: 0; }
+        .container { max-width: 900px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+        h1 { text-align: center; margin-bottom: 30px; font-size: 2rem; color: #222; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; font-size: 1rem; }
+        th { background: #eee; }
+        tr:nth-child(even) { background: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="logoutBtn" style="position:absolute;top:20px;right:30px;padding:8px 18px;background:#dc3545;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:1rem;">Logout</button>
+        <h1>Riwayat Pembelian</h1>
+        <table id="orderTable">
+            <thead>
+                <tr>
+                    <th>No. Tiket</th>
+                    <th>Nama</th>
+                    <th>Rasa Utama</th>
+                    <th>Mix Rasa</th>
+                    <th>Topping</th>
+                    <th>Ukuran</th>
+                    <th>Tempat</th>
+                    <th>Jumlah</th>
+                    <th>Deskripsi</th>
+                    <th>Total Harga</th>
+                    <th>Waktu</th>
+                </tr>
+            </thead>
+            <tbody id="orderTableBody"></tbody>
+        </table>
+    </div>
+    <script>
+        // Cek login admin
+        if(sessionStorage.getItem('isAdmin') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+        document.getElementById('logoutBtn').onclick = function() {
+            sessionStorage.removeItem('isAdmin');
+            window.location.href = 'admin-login.html';
+        };
+        function loadOrderHistory() {
+            const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            const tableBody = document.getElementById('orderTableBody');
+            tableBody.innerHTML = '';
+            orderHistory.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.ticketNumber}</td>
+                    <td>${order.name}</td>
+                    <td>${order.flavor || '-'}</td>
+                    <td>${order.mixFlavor || '-'}</td>
+                    <td>${order.toppings}</td>
+                    <td>${order.size}</td>
+                    <td>${order.container}</td>
+                    <td>${order.quantity}</td>
+                    <td>${order.orderDescription}</td>
+                    <td>Rp ${order.totalPrice.toLocaleString()}</td>
+                    <td>${order.time}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        window.onload = loadOrderHistory;
+    </script>
+</body>
+</html> 

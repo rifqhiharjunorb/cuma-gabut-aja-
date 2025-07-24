@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin</title>
+    <style>
+        body { background: #f8f8f8; font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-box { background: #fff; padding: 32px 28px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); width: 320px; }
+        h2 { text-align: center; margin-bottom: 24px; color: #333; }
+        label { display: block; margin-bottom: 8px; color: #444; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin-bottom: 18px; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; }
+        button { width: 100%; padding: 10px; background: #007bff; color: #fff; border: none; border-radius: 5px; font-size: 1.1rem; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .error { color: #c00; text-align: center; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>Login Admin</h2>
+        <div id="errorMsg" class="error" style="display:none;"></div>
+        <form id="loginForm" autocomplete="off">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required autofocus>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('loginForm').onsubmit = function(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            if(user === 'admin' && pass === 'admin123') {
+                // Simpan status login di sessionStorage
+                sessionStorage.setItem('isAdmin', 'true');
+                window.location.href = 'tabel.html';
+            } else {
+                document.getElementById('errorMsg').textContent = 'Username atau password salah!';
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        };
+    </script>
+</body>
+</html> 
